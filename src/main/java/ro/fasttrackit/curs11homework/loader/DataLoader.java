@@ -3,14 +3,8 @@ package ro.fasttrackit.curs11homework.loader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import ro.fasttrackit.curs11homework.entity.Director;
-import ro.fasttrackit.curs11homework.entity.School;
-import ro.fasttrackit.curs11homework.entity.Student;
-import ro.fasttrackit.curs11homework.entity.Teacher;
-import ro.fasttrackit.curs11homework.repository.DirectorRepository;
-import ro.fasttrackit.curs11homework.repository.SchoolRepository;
-import ro.fasttrackit.curs11homework.repository.StudentRepository;
-import ro.fasttrackit.curs11homework.repository.TeacherRepository;
+import ro.fasttrackit.curs11homework.entity.*;
+import ro.fasttrackit.curs11homework.repository.*;
 
 import java.util.List;
 
@@ -24,10 +18,13 @@ public class DataLoader implements CommandLineRunner {
     private final DirectorRepository directorRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
+    private final UserRepository userRepository;
 
 
     @Override
     public void run(String... args) throws Exception {
+        createUsers();
+
         if (directorRepository.findAll().isEmpty()) {
             Director director = directorRepository.save(
                     new Director(randomUUID().toString(), "Director1", 52)
@@ -35,6 +32,31 @@ public class DataLoader implements CommandLineRunner {
             System.out.println(director);
 
             addSchools(director);
+        }
+    }
+
+    private void createUsers() {
+        if (userRepository.findAll().isEmpty()) {
+            userRepository.saveAll(List.of(
+                    User.builder()
+                            .userId(randomUUID().toString())
+                            .username("student")
+                            .password("student")
+                            .roles(List.of("STUDENT"))
+                            .build(),
+                    User.builder()
+                            .userId(randomUUID().toString())
+                            .username("teacher")
+                            .password("teacher")
+                            .roles(List.of("TEACHER"))
+                            .build(),
+                    User.builder()
+                            .userId(randomUUID().toString())
+                            .username("director")
+                            .password("director")
+                            .roles(List.of("DIRECTOR"))
+                            .build()
+            ));
         }
     }
 
