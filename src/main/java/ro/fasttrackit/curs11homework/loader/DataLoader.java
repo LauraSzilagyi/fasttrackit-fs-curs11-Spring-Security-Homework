@@ -28,36 +28,51 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        directorRepository.deleteAll();
-        Director director = directorRepository.save(
-                new Director(randomUUID().toString(), "Director1", 52)
-        );
-        System.out.println(director);
+        if (directorRepository.findAll().isEmpty()) {
+            Director director = directorRepository.save(
+                    new Director(randomUUID().toString(), "Director1", 52)
+            );
+            System.out.println(director);
 
-//        schoolRepository.deleteAll();
-        School school = schoolRepository.save(
-                new School(randomUUID().toString(), "Good School", director.id())
-        );
-        System.out.println(school);
+            addSchools(director);
+        }
+    }
 
-//        studentRepository.deleteAll();
-        List<Student> students = studentRepository.saveAll(
-                List.of(
-                        new Student(randomUUID().toString(), "student1", 12, school.id()),
-                        new Student(randomUUID().toString(), "student2", 10, school.id()),
-                        new Student(randomUUID().toString(), "student3", 11, school.id())
-                )
-        );
-        System.out.println(students);
+    private void addSchools(Director director) {
+        if (schoolRepository.findAll().isEmpty()) {
+            School school = schoolRepository.save(
+                    new School(randomUUID().toString(), "Good School", director.id())
+            );
+            System.out.println(school);
 
-//        teacherRepository.deleteAll();
-        List<Teacher> teachers = teacherRepository.saveAll(
-                List.of(
-                        new Teacher(randomUUID().toString(), "teacher1", 45, true, null, school.id()),
-                        new Teacher(randomUUID().toString(), "teacher2", 27, false, null, school.id()),
-                        new Teacher(randomUUID().toString(), "teacher3", 60, true, null, school.id())
-                )
-        );
-        System.out.println(teachers);
+            addStudentsToSchool(school);
+            addTeachersToSchool(school);
+        }
+    }
+
+    private void addStudentsToSchool(School school) {
+        if (studentRepository.findAll().isEmpty()) {
+            List<Student> students = studentRepository.saveAll(
+                    List.of(
+                            new Student(randomUUID().toString(), "student1", 12, school.id()),
+                            new Student(randomUUID().toString(), "student2", 10, school.id()),
+                            new Student(randomUUID().toString(), "student3", 11, school.id())
+                    )
+            );
+            System.out.println(students);
+        }
+    }
+
+    private void addTeachersToSchool(School school) {
+        if (teacherRepository.findAll().isEmpty()) {
+            List<Teacher> teachers = teacherRepository.saveAll(
+                    List.of(
+                            new Teacher(randomUUID().toString(), "teacher1", 45, true, null, school.id()),
+                            new Teacher(randomUUID().toString(), "teacher2", 27, false, null, school.id()),
+                            new Teacher(randomUUID().toString(), "teacher3", 60, true, null, school.id())
+                    )
+            );
+            System.out.println(teachers);
+        }
     }
 }
