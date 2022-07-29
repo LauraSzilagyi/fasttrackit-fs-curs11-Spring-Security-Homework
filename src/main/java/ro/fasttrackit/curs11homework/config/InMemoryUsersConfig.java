@@ -1,32 +1,30 @@
 package ro.fasttrackit.curs11homework.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import java.util.List;
 
-//@Configuration
+@Configuration
+@RequiredArgsConstructor
 public class InMemoryUsersConfig {
+
+    private final CredentialConfigurationReader credentialConfigurationReader;
     @Bean
     InMemoryUserDetailsManager userDetailsManager() {
-        return new InMemoryUserDetailsManager(List.of(
-                User.builder()
-                        .username("student")
-                        .password("student")
-                        .roles("STUDENT")
-                        .build(),
-                User.builder()
-                        .username("teacher")
-                        .password("teacher")
-                        .roles("TEACHER")
-                        .build(),
-                User.builder()
-                        .username("director")
-                        .password("director")
-                        .roles("DIRECTOR")
-                        .build()
-        ));
+
+        List<UserDetails> userDetails = credentialConfigurationReader.getUsers().stream()
+                .map(user -> User.builder()
+                        .username(user.user())
+                        .password(user.password())
+                        .roles(user.role().toUpperCase())
+                        .build())
+                .toList();
+
+        return new InMemoryUserDetailsManager(userDetails);
     }
 }
