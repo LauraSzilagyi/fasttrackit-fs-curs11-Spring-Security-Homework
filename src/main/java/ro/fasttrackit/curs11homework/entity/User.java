@@ -3,8 +3,7 @@ package ro.fasttrackit.curs11homework.entity;
 import lombok.Builder;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 import java.util.List;
 
 @Document("users")
